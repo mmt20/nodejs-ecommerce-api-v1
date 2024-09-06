@@ -16,9 +16,6 @@ const {
 
 const router = express.Router();
 
-// router.get('/', getCategory);
-// router.post('/', createCategory);
-
 router
   .route('/')
   .get(getCategories)
