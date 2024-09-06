@@ -1,0 +1,44 @@
+const express = require('express');
+const dotenv = require('dotenv');
+const morgan = require('morgan');
+
+dotenv.config({ path: 'config.env' });
+const ApiError = require('./utils/apiError');
+const globalError = require('./middlewares/errorMiddleware');
+const dbConnection = require('./config/database');
+const categoryRoute = require('./routes/categoryRoute');
+// connect with db
+dbConnection();
+// express app
+const app = express();
+
+// Middlewares --> Barse code string to json
+app.use(express.json());
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+  console.log(`mode: ${process.env.NODE_ENV}`);
+}
+
+//Mount  Routes
+app.use('/api/v1/categories', categoryRoute);
+
+app.all('*', (req, res, next) => {
+  // Create a 404 error and pass it to the global error handler
+  next(new ApiError(`Can't find this route: ${req.originalUrl}`, 400));
+});
+//global error handling middleware
+app.use(globalError);
+const PORT = process.env.PORT || 8000;
+const server = app.listen(PORT, () => {
+  console.log(`App running on port ${PORT}`);
+});
+
+// Handel rejection  outside express
+process.on('unhandledRejection', (err) => {
+  console.error(`unhandledRejection Error : ${err.name} | ${err.message} `);
+  server.close(() => {
+    console.error(`Shutting down....`);
+    process.exit(1);
+  });
+});
