@@ -19,5 +19,16 @@
     "morgan": "^1.10.0",
     "nodejs-ecommerce-api-v1": "file:",
     "slugify": "^1.6.6"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.30.0",
+    "eslint-plugin-jsx-a11y": "^6.10.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.35.2",
+    "prettier": "^3.3.3"
   }
 }
