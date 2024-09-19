@@ -6,11 +6,11 @@ const {
   deleteCategoryValidator,
 } = require('../utils/validators/categoryValidator');
 const {
+  getCategories,
   getCategory,
   createCategory,
   updateCategory,
   deleteCategory,
-  getCategories,
 } = require('../services/categoryService');
 
 const subCategoriesRoute = require('./subCategoryRoute');
