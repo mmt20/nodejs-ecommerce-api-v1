@@ -1,3 +1,17 @@
+const sendErrorForDev = (err, res) =>
+  res.status(err.statusCode).json({
+    ststus: err.statusCode,
+    error: err,
+    message: err.message,
+    stack: err.stack,
+  });
+
+const sendErrorForProd = (err, res) =>
+  res.status(err.statusCode).json({
+    ststus: err.statusCode,
+    message: err.message,
+  });
+
 const globalError = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
 
@@ -8,18 +22,4 @@ const globalError = (err, req, res, next) => {
   }
 };
 
-const sendErrorForDev = (err, res) => {
-  return res.status(err.statusCode).json({
-    ststus: err.statusCode,
-    error: err,
-    message: err.message,
-    stack: err.stack,
-  });
-};
-const sendErrorForProd = (err, res) => {
-  return res.status(err.statusCode).json({
-    ststus: err.statusCode,
-    message: err.message,
-  });
-};
 module.exports = globalError;
