@@ -1,7 +1,7 @@
 const multer = require('multer');
 const ApiError = require('../utils/apiError');
 
-exports.uploadSingleImage = (filedName) => {
+const multerOptions = () => {
   const multerStorage = multer.memoryStorage();
 
   const multerFiliter = function (req, file, cb) {
@@ -14,6 +14,10 @@ exports.uploadSingleImage = (filedName) => {
   };
 
   const upload = multer({ storage: multerStorage, fileFilter: multerFiliter });
-
-  return upload.single(filedName);
+  return upload;
 };
+
+exports.uploadSingleImage = (filedName) => multerOptions().single(filedName);
+
+exports.uploadMixOfImages = (arrayOfFields) =>
+  multerOptions().fields(arrayOfFields);

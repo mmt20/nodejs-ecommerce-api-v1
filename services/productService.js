@@ -3,24 +3,12 @@ const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
 const asyncHandler = require('express-async-handler');
 const ApiError = require('../utils/apiError');
+const { uploadMixOfImages } = require('../middlewares/uploadImageMiddleware');
 
 const factory = require('./handlerFactory');
 const Product = require('../models/productModel');
 
-const multerStorage = multer.memoryStorage();
-
-const multerFiliter = function (req, file, cb) {
-  //image.
-  if (file.mimetype.startsWith('image')) {
-    cb(null, true);
-  } else {
-    cb(new ApiError('Only Image allowed', 400), false);
-  }
-};
-
-const upload = multer({ storage: multerStorage, fileFilter: multerFiliter });
-
-exports.uploadProducyImages = upload.fields([
+exports.uploadProducyImages = uploadMixOfImages([
   {
     name: 'imageCover',
     maxCount: 1,
@@ -61,6 +49,7 @@ exports.resizeProductImages = asyncHandler(async (req, res, next) => {
     next();
   }
 });
+
 // @desc     Get list of Product
 // @route   GET  /api/v1/products
 // @acces   Public
