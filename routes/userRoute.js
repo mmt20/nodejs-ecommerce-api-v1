@@ -4,6 +4,7 @@ const {
   createUserValidator,
   updateUserValidator,
   deleteUserValidator,
+  changeUserPasswordValidator,
 } = require('../utils/validators/userValidator');
 const {
   getUsers,
@@ -18,7 +19,11 @@ const {
 
 const router = express.Router();
 
-router.put('/changePassword/:id', changeUserPassword);
+router.put(
+  '/changePassword/:id',
+  changeUserPasswordValidator,
+  changeUserPassword
+);
 
 router
   .route('/')
