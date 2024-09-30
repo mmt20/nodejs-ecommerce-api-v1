@@ -72,10 +72,20 @@ exports.protect = asyncHandler(async (req, res, next) => {
       )
     );
   }
+  console.log(decoded);
 
   // 3) check if user exists
-  // const user = await User.findOne({ _id: decoded.userId });
-  // console.log('user', user);
+  const currentUser = await User.findById(decoded.userId);
+  console.log(currentUser);
+
+  if (!currentUser) {
+    return next(
+      new ApiError(
+        'The user that belong to thistoken does not longer exist',
+        401
+      )
+    );
+  }
 
   // 4) check if user change his password after token created
 });
