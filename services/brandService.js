@@ -37,15 +37,15 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
 
 // @desc     Create brand
 // @route   POST  /api/v1/brand
-// @acces   Private
+// @acces   Private/Admin-Manager
 exports.createBrand = factory.createOne(Brand);
 
 // @desc     Update specific brand by id
 // @route   PUT  /api/v1/brands/:id
-// @acces   Private
+// @acces   Private/Admin-Manager
 exports.updateBrand = factory.updateOne(Brand);
 
 // @desc     Delete specific brand by id
 // @route   DELETE  /api/v1/brands/:id
-// @acces   Private
+// @acces   Private/Admin
 exports.deleteBrand = factory.deleteOne(Brand);

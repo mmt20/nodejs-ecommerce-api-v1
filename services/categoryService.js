@@ -13,14 +13,15 @@ exports.uploadCategoryImage = uploadSingleImage('image');
 // Image processing
 exports.resizeImage = asyncHandler(async (req, res, next) => {
   const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
-  await sharp(req.file.buffer)
-    .resize(600, 600)
-    .toFormat('jpeg')
-    .jpeg({ quality: 95 })
-    .toFile(`uploads/categories/${filename}`);
-
-  // Save image into our db
-  req.body.image = filename;
+  if (req.file) {
+    await sharp(req.file.buffer)
+      .resize(600, 600)
+      .toFormat('jpeg')
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/categories/${filename}`);
+    // Save image into our db
+    req.body.image = filename;
+  }
 
   next();
 });
@@ -37,15 +38,15 @@ exports.getCategory = factory.getOne(Category);
 
 // @desc     Create category
 // @route   POST  /api/v1/categories
-// @acces   Private
+// @acces   Private/Admin-Manager
 exports.createCategory = factory.createOne(Category);
 
 // @desc     Update specific category by id
 // @route   PUT  /api/v1/categories/:id
-// @acces   Private
+// @acces   Private/Admin-Manager
 exports.updateCategory = factory.updateOne(Category);
 
 // @desc     Delete specific category by id
 // @route   DELETE  /api/v1/categories/:id
-// @acces   Private
+// @acces   Private/Admin
 exports.deleteCategory = factory.deleteOne(Category);
