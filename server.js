@@ -18,6 +18,7 @@ const authRoute = require('./routes/authRoute');
 const reviewRoute = require('./routes/reviewRoute');
 const wishlistRoute = require('./routes/wishlistRoute');
 const addressRoute = require('./routes/addressRoute');
+const couponRoute = require('./routes/couponRoute');
 
 // connect with db
 dbConnection();
@@ -43,6 +44,7 @@ app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/reviews', reviewRoute);
 app.use('/api/v1/wishlist', wishlistRoute);
 app.use('/api/v1/addresses', addressRoute);
+app.use('/api/v1/coupons', couponRoute);
 
 app.all('*', (req, res, next) => {
   // Create a 404 error and pass it to the global error handler
