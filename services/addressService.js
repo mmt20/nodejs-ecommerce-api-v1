@@ -2,54 +2,54 @@ const asyncHandler = require('express-async-handler');
 
 const User = require('../models/userModel');
 
-// @desc    Add product to wishlist
-// @route   POST  /api/v1/wishlist
+// @desc    Add address to user addresses list
+// @route   POST  /api/v1/addresses
 // @acces   Private/User
-exports.addProductToWishlist = asyncHandler(async (req, res, next) => {
-  // $addToSet => add productId to wishlist array if productId not exist
+exports.addAddress = asyncHandler(async (req, res, next) => {
+  // $addToSet => add address object to user addresses array
   const user = await User.findByIdAndUpdate(
     req.user._id,
     {
-      $addToSet: { wishlist: req.body.productId },
+      $addToSet: { addresses: req.body },
     },
     { new: true }
   );
 
   res.status(200).json({
     status: 'success',
-    message: 'Product added successfully to your wishlist.',
-    data: user.wishlist,
+    message: 'Addresses added successfully.',
+    data: user.addresses,
   });
 });
 
-// @desc    Remove product to wishlist
-// @route   DELETE  /api/v1/wishlist/:productId
+// @desc    Remove address from user addresses list
+// @route   DELETE  /api/v1/addresses/:addressId
 // @acces   Private/User
-exports.removeProductFromWishlist = asyncHandler(async (req, res, next) => {
-  // $pull => remove productId from wishlist array if productId exist
+exports.removeAddress = asyncHandler(async (req, res, next) => {
+  // $pull => remove address object from user addresses array if address exist
   const user = await User.findByIdAndUpdate(
     req.user._id,
     {
-      $pull: { wishlist: req.params.productId },
+      $pull: { addresses: { _id: req.params.addressId } },
     },
     { new: true }
   );
 
   res.status(200).json({
     status: 'success',
-    message: 'Product removed successfully to your wishlist.',
+    message: 'Address removed successfully.',
     data: user.wishlist,
   });
 });
 
-// @desc    Get Logged user wishlist
-// @route   GET  /api/v1/wishlist
+// @desc    Get Logged user addresses list
+// @route   GET  /api/v1/addresses
 // @acces   Private/User
-exports.getLoggedUserWishList = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user._id).populate('wishlist');
+exports.getLoggedUserAddresses = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id).populate('addresses');
   res.status(200).json({
     status: 'success',
-    results: user.wishlist.length,
-    data: user.wishlist,
+    results: user.addresses.length,
+    data: user.addresses,
   });
 });
