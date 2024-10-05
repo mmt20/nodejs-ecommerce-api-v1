@@ -6,9 +6,14 @@ exports.deleteOne = (Model) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const document = await Model.findByIdAndDelete(id);
+
     if (!document) {
-      return next(new ApiError(`No document found for this id: ${id}`, 404));
+      return next(new ApiError(`No document for this id ${id}`, 404));
     }
+
+    // Trigger "remove" event manually
+    document.constructor.emit('remove', document);
+
     res.status(204).send();
   });
 exports.updateOne = (Model) =>
@@ -21,6 +26,8 @@ exports.updateOne = (Model) =>
         new ApiError(`No document found for this id: ${req.params.id}`, 404)
       );
     }
+    // Trigger "save" when update document
+    await document.save();
     res.status(200).json({ data: document });
   });
 

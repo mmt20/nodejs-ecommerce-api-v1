@@ -16,6 +16,7 @@ const reviewSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Review must belong to user'],
     },
+    // parent reference (one to many)
     product: {
       type: mongoose.Schema.ObjectId,
       ref: 'Product',
@@ -62,6 +63,13 @@ reviewSchema.statics.calcAverageRatingsAndQuantity = async function (
 
 reviewSchema.post('save', async function () {
   await this.constructor.calcAverageRatingsAndQuantity(this.product);
+});
+
+// Use 'findOneAndDelete' hook instead of 'remove'
+reviewSchema.post('findOneAndDelete', async function (doc) {
+  if (doc) {
+    await doc.constructor.calcAverageRatingsAndQuantity(doc.product);
+  }
 });
 
 module.exports = mongoose.model('Review', reviewSchema);
