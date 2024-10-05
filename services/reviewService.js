@@ -1,9 +1,14 @@
-const sharp = require('sharp');
-const { v4: uuidv4 } = require('uuid');
-const asyncHandler = require('express-async-handler');
-
 const factory = require('./handlerFactory');
 const Review = require('../models/reviewModel');
+
+// Nested route
+// GET /api/v1/products/:productId/reviews
+exports.createFiliterObject = (req, res, next) => {
+  let filiterObject = {};
+  if (req.params.productId) filiterObject = { product: req.params.productId };
+  req.filterObj = filiterObject;
+  next();
+};
 
 // @desc    Get reviews
 // @route   GET  /api/v1/reviews
@@ -14,6 +19,13 @@ exports.getReviews = factory.getAll(Review);
 // @route   GET  /api/v1/reviews:id
 // @acces   Public
 exports.getReview = factory.getOne(Review);
+
+// Nested route (Create)
+exports.setProductIdAndUserIdToBody = (req, res, next) => {
+  if (!req.body.product) req.body.product = req.params.productId;
+  if (!req.body.user) req.body.user = req.user._id;
+  next();
+};
 
 // @desc    Create reviews
 // @route   POST  /api/v1/reviews
