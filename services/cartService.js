@@ -11,6 +11,7 @@ const calcTotalCartPrice = (cart) => {
     totalPrice += item.quantity * item.price;
   });
   cart.totalCartPrice = totalPrice;
+  cart.totalPriceAfterDiscount = undefined;
 
   return totalPrice;
 };
