@@ -13,6 +13,7 @@ const mountRoutes = require('./routes');
 
 // connect with db
 dbConnection();
+
 // express app
 const app = express();
 
@@ -32,14 +33,15 @@ app.all('*', (req, res, next) => {
   // Create a 404 error and pass it to the global error handler
   next(new ApiError(`Can't find this route: ${req.originalUrl}`, 400));
 });
-//global error handling middleware
+
+// Global error handling middleware for express
 app.use(globalError);
 const PORT = process.env.PORT || 8000;
 const server = app.listen(PORT, () => {
   console.log(`App running on port ${PORT}`);
 });
 
-// Handel rejection  outside express
+// Handle rejection outside express
 process.on('unhandledRejection', (err) => {
   console.error(`unhandledRejection Error : ${err.name} | ${err.message} `);
   server.close(() => {

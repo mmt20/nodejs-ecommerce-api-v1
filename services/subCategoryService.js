@@ -1,4 +1,4 @@
-const factory = require('./handlerFactory');
+const factory = require('./handlersFactory');
 
 const SubCategory = require('../models/subCategoryModel');
 

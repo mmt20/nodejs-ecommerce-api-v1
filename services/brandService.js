@@ -4,7 +4,7 @@ const asyncHandler = require('express-async-handler');
 
 const { uploadSingleImage } = require('../middlewares/uploadImageMiddleware');
 
-const factory = require('./handlerFactory');
+const factory = require('./handlersFactory');
 const Brand = require('../models/brandModel');
 
 // @desc     Get brands

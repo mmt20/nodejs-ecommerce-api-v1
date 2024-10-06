@@ -1,4 +1,4 @@
-const factory = require('./handlerFactory');
+const factory = require('./handlersFactory');
 const Review = require('../models/reviewModel');
 
 // Nested route

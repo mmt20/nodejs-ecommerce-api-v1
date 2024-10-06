@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const couponSchema = new mongoose.Schema(
   {
     name: {
@@ -18,4 +19,5 @@ const couponSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 module.exports = mongoose.model('Coupon', couponSchema);

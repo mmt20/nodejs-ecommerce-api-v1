@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 
 const { uploadSingleImage } = require('../middlewares/uploadImageMiddleware');
 
-const factory = require('./handlerFactory');
+const factory = require('./handlersFactory');
 const ApiError = require('../utils/apiError');
 const createToken = require('../utils/createToken');
 
