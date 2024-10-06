@@ -49,3 +49,18 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
   }
   res.status(201).json({ status: 'success', data: order });
 });
+
+exports.filiterOrdersforLoggedUser = asyncHandler(async (req, res, next) => {
+  let filiter = {};
+  if (req.user.role === 'user') {
+    req.filterObj = { user: req.user._id };
+  }
+  next();
+});
+
+// @desc    Get all orders
+// @route   Post  /api/v1/orders
+// @acces   Private/User-Admin-Manager
+exports.findAllOrders = factory.getAll(Order);
+
+exports.findSprcificOrder = factory.getOne(Order);
