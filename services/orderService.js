@@ -63,4 +63,50 @@ exports.filiterOrdersforLoggedUser = asyncHandler(async (req, res, next) => {
 // @acces   Private/User-Admin-Manager
 exports.findAllOrders = factory.getAll(Order);
 
+// @desc    Get  order by id
+// @route   POST /api/v1/orders/OrderId
+// @access  Protected/User-Admin-Manager
 exports.findSprcificOrder = factory.getOne(Order);
+
+// @desc    Update order paid status to paid
+// @route   PUT /api/v1/orders/:id/pay
+// @access  Protected/Admin-Manager
+exports.updateOrderToPaid = asyncHandler(async (req, res, next) => {
+  const order = await Order.findById(req.params.id);
+  if (!order) {
+    return next(
+      new ApiError(
+        `There is no such order with this id : ${req.params.id}`,
+        404
+      )
+    );
+  }
+
+  // update order to paid
+  order.isPaid = true;
+  order.paidAt = Date.now();
+
+  const updatedOrder = await order.save();
+  res.status(200).json({ status: 'success', data: updatedOrder });
+});
+
+// @desc    Update order delivered status
+// @route   PUT /api/v1/orders/:id/deliver
+// @access  Protected/Admin-Manager
+exports.updateOrderToDelivered = asyncHandler(async (req, res, next) => {
+  const order = await Order.findById(req.params.id);
+  if (!order) {
+    return next(
+      new ApiError(
+        `There is no such a order with this id:${req.params.id}`,
+        404
+      )
+    );
+  }
+  // update order to paid
+  order.isDlivered = true;
+  order.dliveredAt = Date.now();
+  const updatedOrder = await order.save();
+
+  res.status(200).json({ status: 'success', data: updatedOrder });
+});
