@@ -12,6 +12,7 @@ const globalError = require('./middlewares/errorMiddleware');
 const dbConnection = require('./config/database');
 // Routes
 const mountRoutes = require('./routes');
+const { webhookCheckout } = require('./services/orderService');
 
 // connect with db
 dbConnection();
@@ -25,6 +26,13 @@ app.options('*', cors()); // include before other routes
 
 // compress all responses
 app.use(compression());
+
+// checkout webhook
+app.post(
+  '//webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  webhookCheckout
+);
 
 // Middlewares --> Barse code string to json
 app.use(express.json());
