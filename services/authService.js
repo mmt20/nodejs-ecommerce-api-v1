@@ -6,6 +6,7 @@ const asyncHandler = require('express-async-handler');
 const ApiError = require('../utils/apiError');
 const sendEmail = require('../utils/sendEmail');
 const createToken = require('../utils/createToken');
+const { sanitizeUser } = require('../utils/sanitizeData');
 
 const User = require('../models/userModel');
 const { equal } = require('node:assert');
@@ -23,7 +24,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
 
   // 2 - generate token
   const token = createToken(user._id);
-  res.status(201).json({ data: user, token });
+  res.status(201).json({ data: sanitizeUser(user), token });
 });
 
 // @desc    Login
@@ -39,6 +40,10 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
   //3) generate token
   const token = createToken(user._id);
+
+  // Delete password from response
+  delete user._doc.password;
+
   //4) send response to client side
   res.status(200).json({ data: user, token });
 });
@@ -115,7 +120,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 });
 
 // @desc   Authorizaton (User Permissions)
-// ["admin", "manager"]
+// @acces ["admin", "manager"]
 exports.allowedTo = (...roles) =>
   asyncHandler(async (req, res, next) => {
     // 1) access roles

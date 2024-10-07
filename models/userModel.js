@@ -34,6 +34,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ['user', 'manager', 'admin'],
       default: 'user',
+      select: false,
     },
     active: {
       type: Boolean,
