@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const compression = require('compression');
 const { rateLimit } = require('express-rate-limit');
+const hpp = require('hpp');
 
 dotenv.config({ path: 'config.env' });
 const ApiError = require('./utils/apiError');
@@ -54,6 +55,19 @@ const limiter = rateLimit({
 
 // Apply the rate limiting middleware to all requests.
 app.use('/api', limiter);
+
+// Middleware to protect against HTTP Parameter Pollution attacks
+app.use(
+  hpp({
+    whitelist: [
+      'sold',
+      'price',
+      'quantity',
+      'ratingsAverage',
+      'ratingsQuantity',
+    ],
+  })
+);
 
 //Mount  Routes
 mountRoutes(app);
