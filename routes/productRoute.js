@@ -50,8 +50,8 @@ router
     updateProduct
   )
   .delete(
-    authService.protect,
-    authService.allowedTo('admin'),
+    // authService.protect,
+    // authService.allowedTo('admin'),
     deleteProductValidator,
     deleteProduct
   );
