@@ -56,12 +56,23 @@ exports.getOne = (Model, populationOpt) =>
 exports.getAll = (Model, modelName) =>
   asyncHandler(async (req, res) => {
     let filter = {};
+
+    // Filter products by category ID
+    if (req.query.category) {
+      filter.category = req.query.category;
+    }
+
+    // Filter products by brand ID
+    if (req.query.brand) {
+      filter.brand = req.query.brand;
+    }
+
     if (req.filterObj) {
-      filter = req.filterObj;
+      filter = { ...filter, ...req.filterObj };
     }
 
     // Build query
-    const documentLength = await Model.countDocuments();
+    const documentLength = await Model.countDocuments(filter);
     const apiFeatures = new ApiFeatures(Model.find(filter), req.query)
       .filter()
       .search(modelName)
