@@ -57,16 +57,6 @@ exports.getAll = (Model, modelName) =>
   asyncHandler(async (req, res) => {
     let filter = {};
 
-    // Filter products by category ID
-    if (req.query.category) {
-      filter.category = req.query.category;
-    }
-
-    // Filter products by brand ID
-    if (req.query.brand) {
-      filter.brand = req.query.brand;
-    }
-
     if (req.filterObj) {
       filter = { ...filter, ...req.filterObj };
     }

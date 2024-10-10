@@ -11,7 +11,10 @@ class ApiFeatures {
 
     // Apply filteration using [gte , gt , lte , lt ]
     let queryStr = JSON.stringify(queryStringObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    queryStr = queryStr.replace(
+      /\b(gte|gt|lte|lt|in)\b/g,
+      (match) => `$${match}`
+    );
 
     this.mongooseQuery = this.mongooseQuery.find(JSON.parse(queryStr));
 

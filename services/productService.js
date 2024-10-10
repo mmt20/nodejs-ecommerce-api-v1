@@ -17,7 +17,6 @@ exports.uploadProducyImages = uploadMixOfImages([
 ]);
 
 exports.resizeProductImages = asyncHandler(async (req, res, next) => {
-  // console.log(req.files);
   // Image processing for imageCover
   if (req.files.imageCover) {
     const imageCoverFileName = `product-${uuidv4()}-${Date.now()}-cover.jpeg`;
@@ -60,7 +59,7 @@ exports.getProducts = factory.getAll(Product, 'Products');
 // @acces   Public
 exports.getProduct = factory.getOne(Product, 'reviwes');
 
-// @desc     Create product
+// @desc    Create product
 // @route   POST  /api/v1/products
 // @acces   Private
 exports.createProduct = factory.createOne(Product);
