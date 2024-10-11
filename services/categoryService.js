@@ -9,20 +9,19 @@ const Category = require('../models/categoryModel');
 
 // Upload single image
 exports.uploadCategoryImage = uploadSingleImage('image');
-
-// Image processing
+// Resize image
 exports.resizeImage = asyncHandler(async (req, res, next) => {
-  const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
-  if (req.file) {
-    await sharp(req.file.buffer)
-      .resize(600, 600)
-      .toFormat('jpeg')
-      .jpeg({ quality: 95 })
-      .toFile(`uploads/categories/${filename}`);
-    // Save image into our db
-    req.body.image = filename;
-  }
+  if (!req.file) return next();
 
+  // req.file.filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
+  const ext = req.file.mimetype.split('/')[1];
+  const filename = `category-${uuidv4()}-${Date.now()}.${ext}`;
+
+  await sharp(req.file.buffer)
+    // .resize(500, 500)
+    .toFile(`uploads/categories/${filename}`); // write into a file on the disk
+
+  req.body.image = filename;
   next();
 });
 
