@@ -85,7 +85,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
   if (!currentUser) {
     return next(
       new ApiError(
-        'The user that belong to thistoken does not longer exist',
+        'The user that belong to this token does not longer exist',
         401
       )
     );

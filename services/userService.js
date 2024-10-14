@@ -123,17 +123,24 @@ exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
   res.status(200).json({ data: user, token });
 });
 
+// body = {name: "ahmed", password: "123"} , allowedFields = ["name", "phone"]
+const filterObject = (obj, ...allowedFields) => {
+  const newBodyObj = {};
+  Object.keys(obj).forEach((key) => {
+    if (allowedFields.includes(key)) newBodyObj[key] = obj[key];
+  });
+  return newBodyObj;
+};
+
 // @desc    Update Logged User data (without password and role)
 // @route   PUT  /api/v1/users/updateMe
 // @acces   Private/Protected
 exports.updateLoggedUserData = asyncHandler(async (req, res, next) => {
+  // 1) Select fields that allowed to update
+  const allowedBodyFields = filterObject(req.body, 'name', 'email', 'phone');
   const updatedUser = await User.findByIdAndUpdate(
     req.user._id,
-    {
-      name: req.body.name,
-      email: req.body.email,
-      phone: req.body.phone,
-    },
+    allowedBodyFields,
     { new: true }
   );
   res.status(200).json({ data: updatedUser });

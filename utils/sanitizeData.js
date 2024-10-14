@@ -4,5 +4,6 @@ exports.sanitizeUser = function (user) {
     username: user.name,
     fullName: user.email,
     role: user.role,
+    phone: user.phone,
   };
 };
