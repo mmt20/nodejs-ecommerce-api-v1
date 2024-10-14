@@ -73,8 +73,8 @@ exports.protect = asyncHandler(async (req, res, next) => {
   if (!decoded) {
     return next(
       new ApiError(
-        'You are not login, Please login to  get access for this route',
-        401
+        'The user that belong to this token does no longer exist',
+        403
       )
     );
   }
