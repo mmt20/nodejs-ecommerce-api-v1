@@ -35,18 +35,19 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
   // 3) Create order with defult paymentMethodType cash
   const order = await Order.create({
     user: req.user._id,
-    cartItems: cart.cartItems,
+    products: cart.products,
     shippingAddress: req.body.shippingAddress,
     totalOrderPrice,
   });
   // 4) After creating order, decrement product quntity , increment product sold
   if (order) {
-    const bulkOption = cart.cartItems.map((item) => ({
+    const bulkOption = cart.products.map((item) => ({
       updateOne: {
         filter: { _id: item.product },
-        update: { $inc: { quantity: -item.quantity, sold: +item.quantity } },
+        update: { $inc: { quantity: -item.count, sold: +item.count } },
       },
     }));
+
     await Product.bulkWrite(bulkOption, {});
 
     // 5) Clear cart depend on cartId

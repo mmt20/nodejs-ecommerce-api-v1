@@ -7,7 +7,7 @@ const orderSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Order must be belong to user'],
     },
-    cartItems: [
+    products: [
       {
         product: {
           type: mongoose.Schema.ObjectId,
@@ -18,15 +18,16 @@ const orderSchema = new mongoose.Schema(
         price: Number,
       },
     ],
+
+    taxPrice: {
+      type: Number,
+      default: 0,
+    },
     shippingAddress: {
       details: String,
       phone: String,
       city: String,
       postalCode: String,
-    },
-    taxPrice: {
-      type: Number,
-      default: 0,
     },
     shippingPrice: {
       type: Number,
@@ -45,11 +46,11 @@ const orderSchema = new mongoose.Schema(
       default: false,
     },
     paidAt: Date,
-    isDlivered: {
+    isDelivered: {
       type: Boolean,
       default: false,
     },
-    dliveredAt: Date,
+    deliveredAt: Date,
   },
   { timestamps: true }
 );
@@ -58,7 +59,10 @@ orderSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
     select: 'name profileImg email phone',
-  }).populate({ path: 'cartItems.product', select: 'title imageCover' });
+  }).populate({
+    path: 'products.product',
+    select: 'title imageCover ',
+  });
 
   next();
 });
