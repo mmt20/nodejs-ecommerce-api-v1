@@ -82,16 +82,26 @@ productSchema.pre(/^find/, function (next) {
 });
 
 const setImageUrl = (doc) => {
-  // return image baseUrl + image name
+  const baseUrl = process.env.BASE_URL;
+
+  // Set image cover URL
   if (doc.imageCover) {
-    const imageUrl = `${process.env.BASE_URL}/products/${doc.imageCover}`;
-    doc.imageCover = imageUrl;
+    if (!doc.imageCover.startsWith(baseUrl)) {
+      const imageUrl = `${baseUrl}/products/${doc.imageCover}`;
+      doc.imageCover = imageUrl;
+    }
   }
+
+  // Set images URL
   if (doc.images) {
     const imagesList = [];
     doc.images.forEach((image) => {
-      const imageUrl = `${process.env.BASE_URL}/products/${image}`;
-      imagesList.push(imageUrl);
+      if (!image.startsWith(baseUrl)) {
+        const imageUrl = `${baseUrl}/products/${image}`;
+        imagesList.push(imageUrl);
+      } else {
+        imagesList.push(image);
+      }
     });
     doc.images = imagesList;
   }
