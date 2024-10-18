@@ -165,46 +165,51 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 });
 
 const createOrderCheckout = async (session) => {
-  // 1) Get needed data from session
-  const cartId = session.client_reference_id;
-  const shippingAddress = session.metadata;
-  const checkoutAmount = session.amount_total / 100;
+  try {
+    // 1) Get needed data from session
+    const cartId = session.client_reference_id;
+    const shippingAddress = session.metadata;
+    const checkoutAmount = session.amount_total / 100;
 
-  // 2) Get Cart and User
-  const cart = await Cart.findById(cartId);
-  const user = await User.findOne({ email: session.customer_email });
-  console.log('cart', cart);
+    // 2) Get Cart and User
+    const cart = await Cart.findById(cartId);
+    const user = await User.findOne({ email: session.customer_email });
+    console.log('cart', cart);
 
-  //3) Create order
-  const order = await Order.create({
-    user: user._id,
-    products: cart.products,
-    shippingAddress: shippingAddress,
-    totalOrderPrice: checkoutAmount,
-    paymentMethodType: 'card',
-    isPaid: true,
-    paidAt: Date.now(),
-  });
-  // 4) After creating order decrement product quantity, increment sold
-  // Performs multiple write operations with controls for order of execution.
-  if (order) {
-    const bulkOption = cart.cartItems.map((item) => ({
-      updateOne: {
-        filter: { _id: item.product },
-        update: { $inc: { quantity: -item.quantity, sold: +item.quantity } },
-      },
-    }));
-    await Product.bulkWrite(bulkOption, {});
+    // 3) Create order
+    const order = await Order.create({
+      user: user._id,
+      products: cart.products,
+      shippingAddress: shippingAddress,
+      totalOrderPrice: checkoutAmount,
+      paymentMethodType: 'card',
+      isPaid: true,
+      paidAt: Date.now(),
+    });
 
-    // 5) Clear cart
-    await Cart.findByIdAndDelete(cart._id);
+    // 4) After creating order decrement product quantity, increment sold
+    if (order) {
+      const bulkOption = cart.cartItems.map((item) => ({
+        updateOne: {
+          filter: { _id: item.product },
+          update: { $inc: { quantity: -item.quantity, sold: +item.quantity } },
+        },
+      }));
+      await Product.bulkWrite(bulkOption, {});
+
+      // 5) Clear cart
+      await Cart.findByIdAndDelete(cart._id);
+    }
+  } catch (error) {
+    console.error('Error creating order or deleting cart:', error);
+    throw error; // Re-throw error to be handled in the webhook
   }
 };
 
 // @desc    This webhook will run when stipe payment successfully paid
 // @route   PUT /webhook-checkout
 // @access  From stripe
-exports.webhookCheckout = (req, res, next) => {
+exports.webhookCheckout = async (req, res, next) => {
   const signature = req.headers['stripe-signature'].toString();
   let event;
   try {
@@ -218,7 +223,7 @@ exports.webhookCheckout = (req, res, next) => {
   }
 
   if (event.type === 'checkout.session.completed') {
-    createOrderCheckout(event.data.object);
+    await createOrderCheckout(event.data.object);
   }
 
   res.status(200).json({ received: true });
