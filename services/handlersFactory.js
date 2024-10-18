@@ -16,18 +16,26 @@ exports.deleteOne = (Model) =>
 
     res.status(204).send();
   });
+
 exports.updateOne = (Model) =>
   asyncHandler(async (req, res, next) => {
-    const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    // Fetch the existing document
+    const document = await Model.findById(req.params.id);
+
     if (!document) {
       return next(
         new ApiError(`No document found for this id: ${req.params.id}`, 404)
       );
     }
-    // Trigger "save" when update document
+
+    // Update only the fields sent in the body
+    Object.keys(req.body).forEach((key) => {
+      document[key] = req.body[key];
+    });
+
+    // Trigger "save" when the document is updated
     await document.save();
+
     res.status(200).json({ data: document });
   });
 

@@ -44,7 +44,7 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
     const bulkOption = cart.products.map((item) => ({
       updateOne: {
         filter: { _id: item.product },
-        update: { $inc: { quantity: -item.count, sold: +item.count } },
+        update: { $inc: { quantity: -item.quantity, sold: +item.quantity } },
       },
     }));
 
@@ -110,8 +110,8 @@ exports.updateOrderToDelivered = asyncHandler(async (req, res, next) => {
     );
   }
   // update order to paid
-  order.isDlivered = true;
-  order.dliveredAt = Date.now();
+  order.isDelivered = true;
+  order.deliveredAt = Date.now();
   const updatedOrder = await order.save();
 
   res.status(200).json({ status: 'success', data: updatedOrder });

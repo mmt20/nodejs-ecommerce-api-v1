@@ -8,7 +8,7 @@ const Coupon = require('../models/couponModel');
 const calcTotalCartPrice = async (cart) => {
   let totalPrice = 0;
   cart.products.forEach((prod) => {
-    totalPrice += prod.price * prod.count;
+    totalPrice += prod.price * prod.quantity;
   });
 
   cart.totalCartPrice = totalPrice;
@@ -41,7 +41,7 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
     if (itemIndex > -1) {
       //product exists in the cart, update the quantity
       const productItem = cart.products[itemIndex];
-      productItem.count += 1;
+      productItem.quantity += 1;
       cart.products[itemIndex] = productItem;
     } else {
       //product does not exists in cart, add new item
@@ -59,7 +59,7 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
   }
   // let totalPrice = 0;
   // cart.products.forEach((prod) => {
-  //   totalPrice += prod.price * prod.count;
+  //   totalPrice += prod.price * prod.quantity;
   // });
 
   // cart.totalCartPrice = totalPrice;
@@ -81,7 +81,7 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
 // @access    Private/User
 exports.updateCartProductCount = asyncHandler(async (req, res, next) => {
   const { itemId } = req.params;
-  const { count } = req.body;
+  const { quantity } = req.body;
   // 1) Check if there is cart for logged user
   const cart = await Cart.findOne({ cartOwner: req.user._id })
     .populate({
@@ -107,7 +107,7 @@ exports.updateCartProductCount = asyncHandler(async (req, res, next) => {
   if (itemIndex > -1) {
     //product exists in the cart, update the quantity
     const productItem = cart.products[itemIndex];
-    productItem.count = count;
+    productItem.quantity = quantity;
     cart.products[itemIndex] = productItem;
   } else {
     return next(
